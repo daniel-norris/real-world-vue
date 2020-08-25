@@ -7,6 +7,7 @@
 
 <script>
 import feather from 'feather-icons';
+
 export default {
     name: 'Icon',
     props: {

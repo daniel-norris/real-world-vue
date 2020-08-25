@@ -36,7 +36,6 @@ export default {
 .event-card > .title {
     margin: 0;
 }
-
 .event-link {
     color: black;
     text-decoration: none;
