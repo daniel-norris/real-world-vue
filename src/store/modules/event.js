@@ -22,23 +22,49 @@ export const mutations = {
 };
 
 export const actions = {
-    createEvent({ commit }, event) {
+    createEvent({ commit, dispatch }, event) {
         // this prevents the store from being updated if the POST request does not complete
-        return EventService.postEvent(event).then(() => {
-            commit('ADD_EVENT', event);
-        });
+        return EventService.postEvent(event)
+            .then(() => {
+                commit('ADD_EVENT', event);
+                const notification = {
+                    type: 'success',
+                    message: 'Your event has been created!'
+                };
+                // this goes to root store, finds notification module and runs add action passing the const notification
+                dispatch('notification/add', notification, { root: true });
+            })
+            .catch(error => {
+                const notification = {
+                    type: 'error',
+                    message:
+                        'There was a problem creating your event ' +
+                        error.message
+                };
+                // this goes to root store, finds notification module and runs add action passing the const notification
+                dispatch('notification/add', notification, { root: true });
+                // this propogates an error to our component
+                throw error;
+            });
     },
     // passes in context object so we can access mutations
-    fetchEvents({ commit }, { perPage, page }) {
+    fetchEvents({ commit, dispatch }, { perPage, page }) {
         EventService.getEvents(perPage, page)
             .then(response => {
                 commit('SET_EVENTS', response);
             })
             .catch(error => {
-                console.log('There was an error: ' + error.response);
+                const notification = {
+                    type: 'error',
+                    message:
+                        // this is the error being passed into catch
+                        'There was a problem fetching events: ' + error.message
+                };
+                // this goes to root store, finds notification module and runs add action passing the const notification
+                dispatch('notification/add', notification, { root: true });
             });
     },
-    fetchEvent({ commit, getters }, id) {
+    fetchEvent({ commit, getters, dispatch }, id) {
         let event = getters.getEventById(id);
 
         if (event) {
@@ -49,7 +75,15 @@ export const actions = {
                     commit('SET_EVENT', response.data);
                 })
                 .catch(error => {
-                    console.log('There was an error:', error.response);
+                    const notification = {
+                        type: 'error',
+                        message:
+                            // this is the error being passed into catch
+                            'There was a problem fetching an event: ' +
+                            error.message
+                    };
+                    // this goes to root store, finds notification module and runs add action passing the const notification
+                    dispatch('notification/add', notification, { root: true });
                 });
         }
     }
