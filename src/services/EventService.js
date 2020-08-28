@@ -1,5 +1,4 @@
 import axios from 'axios';
-import NProgress from 'nprogress';
 
 // single axios instance for our entire app
 const apiClient = axios.create({
@@ -11,16 +10,6 @@ const apiClient = axios.create({
         Accept: 'application/json',
         'Content-Type': 'application/json'
     }
-});
-
-apiClient.interceptors.request.use(config => {
-    NProgress.start();
-    return config;
-});
-
-apiClient.interceptors.response.use(response => {
-    NProgress.done();
-    return response;
 });
 
 export default {

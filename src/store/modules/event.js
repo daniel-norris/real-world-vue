@@ -69,10 +69,15 @@ export const actions = {
 
         if (event) {
             commit('SET_EVENT', event);
+            // returns the event object to the router guard
+            return event;
         } else {
-            EventService.getEvent(id)
+            // by adding return it returns the repsonse object for our projectt bar in eventshow.vue
+            return EventService.getEvent(id)
                 .then(response => {
                     commit('SET_EVENT', response.data);
+                    // this returns the event object to the router guard
+                    return response.data;
                 })
                 .catch(error => {
                     const notification = {
