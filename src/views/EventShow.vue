@@ -35,24 +35,20 @@
 </template>
 
 <script>
-import EventService from '@/services/EventService.js';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     props: ['id'],
-    data() {
-        return {
-            event: {}
-        };
-    },
     created() {
-        EventService.getEvent(this.id)
-            .then(response => {
-                this.event = response.data;
-            })
-            .catch(error => {
-                console.log('There was an error:', error.response);
-            });
-    }
+        // now able to access fetchEvent using simply the 'this' keyword
+        this.fetchEvent(this.id);
+    },
+    // mapped event to state and module called event
+    computed: mapState({
+        event: state => state.event.event
+    }),
+    // we are mapping actions, e.g. fetchevent available under the event namespaced module
+    methods: mapActions('event', ['fetchEvent'])
 };
 </script>
 
